@@ -1,3 +1,7 @@
+// variables for recent search
+const historyEl = $(".history");
+let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+
 // personal api key
 const APIKey = "e5f32316bcf0946a567922d7f5383e9a";
 
