@@ -54,7 +54,7 @@ const searchCity = (city) => {
 
    localStorage.setItem('searchHistory', JSON.stringify(history));
 
-
+   renderHistory();
 
    fetchWeatherData(city)
    .then(weatherData => {
@@ -125,3 +125,26 @@ const searchCity = (city) => {
       console.log("Forecast Data:", forecastData);
    });
 }
+
+const renderHistory = () => {
+   historyEl.empty();
+
+   history.forEach((term) => {
+      const button = $('<button>')
+         .text(term)
+         .addClass('btn btn-secondary me-2');
+      button.on('click', () => searchCity(term));
+      historyEl.append(button);
+   });
+};
+
+// Function to clear search history
+const clearBtn = () => {
+   localStorage.clear();
+   history = [];
+   renderHistory();
+}
+
+renderHistory();
+
+$("#clear-history").on("click", clearBtn);
