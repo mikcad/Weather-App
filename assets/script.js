@@ -116,11 +116,11 @@ const searchCity = (city) => {
          const forecastCodeBlock = 
          `<div class="card-body bg-info-subtle border border-primary p-2" style="min-width: 250px;">
          <h4 class="card-header">${formattedDate}</h4>
+         <h4>${weatherDescription}</h4>
          <img src="${weatherIconURL} " alt="weather-icon" title="${weatherDescription}""></img>
          <h4>Temperature: ${temperature}</h4>
          <h4>Wind Speed: ${windSpeed}</h4>
          <h4>Humidity: ${humidity}</h4>
-         <h4>${weatherDescription}</h4>
          </div>`;
 
          $(".weather-forecast").append(forecastCodeBlock);
