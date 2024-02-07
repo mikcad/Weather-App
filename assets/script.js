@@ -151,4 +151,14 @@ const clearBtn = () => {
 
 renderHistory();
 
+// fucntion to call the current time
+const updateCurrentTime = () => {
+   const formattedTime = dayjs().format('HH:mm:ss A');
+   $(".current-time").html(formattedTime);
+}
+
+updateCurrentTime();
+
+setInterval(updateCurrentTime, 1000);
+
 $("#clear-history").on("click", clearBtn);
