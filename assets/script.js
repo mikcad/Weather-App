@@ -1,70 +1,68 @@
 // variables for recent search
-const historyEl = $(".history");
+const historyEl = $('.history');
 let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
 let recentSearch = JSON.parse(localStorage.getItem('recentSearch')) || '';
 
 // personal api key
-const APIKey = "e5f32316bcf0946a567922d7f5383e9a";
+const APIKey = 'e5f32316bcf0946a567922d7f5383e9a';
 
 // Function to create the weather URL
 const createWeatherURL = (city) => {
-   return `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}`;
-}
+  return `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${APIKey}`;
+};
 
 // Function to create the forecast URL
 const createForecastURL = (lat, lon) => {
-   return `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${APIKey}`;
-}
+  return `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${APIKey}`;
+};
 
 // Function to fetch data from a given URL
 const fetchData = async (url) => {
-   try {
-      const response = await fetch(url);
-      if (!response.ok) {
-         throw new Error('Network response was not ok');
-      }
-      return await response.json();
-   } catch (error) {
-      console.error('Error fetching data:', error);
-   }
-}
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+};
 
 // Function to fetch weather data
 const fetchWeatherData = (city) => {
-   const weatherURL = createWeatherURL(city);
-   return fetchData(weatherURL);
-}
+  const weatherURL = createWeatherURL(city);
+  return fetchData(weatherURL);
+};
 
 // Function to fetch forecast data
 const fetchForecastData = (lat, lon) => {
-   const forecastURL = createForecastURL(lat, lon);
-   return fetchData(forecastURL);
-}
+  const forecastURL = createForecastURL(lat, lon);
+  return fetchData(forecastURL);
+};
 
 // on click event for the search button being clicked
-$(".search-btn").on("click", (e) =>{
-   e.preventDefault();
-   const city = $("#search_input").val();
-   searchCity(city);
+$('.search-btn').on('click', (e) => {
+  e.preventDefault();
+  const city = $('#search_input').val();
+  searchCity(city);
 });
 
 // Function to search for the city
 const searchCity = (city) => {
+  // maintain search history for 7 recent searches
 
-   // maintain search history for 7 recent searches
+  if (city) {
+    history = Array.from(new Set([city, ...history])).slice(0, 7);
+  }
 
-   if (city) {
-      history = Array.from(new Set([city, ...history])).slice(0, 7);
-   }
-
-   localStorage.setItem('searchHistory', JSON.stringify(history));
-
-   renderHistory();
+  localStorage.setItem('searchHistory', JSON.stringify(history));
   localStorage.setItem('recentSearch', JSON.stringify(history[0]));
 
-   fetchWeatherData(city)
-   .then(weatherData => {
+  renderHistory();
 
+  fetchWeatherData(city)
+    .then((weatherData) => {
       const cityName = weatherData.name;
       const temperature = weatherData.main.temp;
       const windSpeed = weatherData.wind.speed;
@@ -73,13 +71,12 @@ const searchCity = (city) => {
       const weatherIconURL = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
       const weatherDescription = weatherData.weather[0].description;
       const date = new Date(weatherData.dt * 1000);
-      const formattedDate = dayjs(date).format('DD/MM/YYYY')
+      const formattedDate = dayjs(date).format('DD/MM/YYYY');
 
-      const cityCodeBlock = 
-      `
+      const cityCodeBlock = `
       <div class="p-3">
       <h3 class="border-bottom border-dark border-2">${cityName} - ${formattedDate}</h3>
-      <h4>Temperature: ${temperature}</h4>
+      <h4>Temperature: ${temperature.toFixed(0)}C</h4>
       <h4>Wind Speed: ${windSpeed}</h4>
       <h4>Humidity: ${humidity}</h4>
       </div>
@@ -89,34 +86,30 @@ const searchCity = (city) => {
       </div>
       `;
 
-      $(".current-weather").html(cityCodeBlock);
+      $('.current-weather').html(cityCodeBlock);
 
-      console.log("Weather Data:", weatherData);
+      console.log('Weather Data:', weatherData);
       const lat = weatherData.coord.lat;
       const lon = weatherData.coord.lon;
       return fetchForecastData(lat, lon);
-      
-   })
-   .then(forecastData => {
-
-      $(".weather-forecast").html("");
-      $("#five-day").html("5-Day Forecast");
+    })
+    .then((forecastData) => {
+      $('.weather-forecast').html('');
+      $('#five-day').html('5-Day Forecast');
       // loops to display a 5 day forecast
-      for (let i = 7; i < 40; i+=8) {
+      for (let i = 7; i < 40; i += 8) {
+        // initialising variables to the correct data values based on the current index of the loop
+        const forecastDate = dayjs(forecastData.list[i].dt_txt);
+        const formattedDate = forecastDate.format(`ddd, MMM YY`);
+        const temperature = forecastData.list[i].main.temp;
+        const windSpeed = forecastData.list[i].wind.speed;
+        const humidity = forecastData.list[i].main.humidity;
+        const weatherIcon = forecastData.list[i].weather[0].icon;
+        const weatherIconURL = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
+        const weatherDescription = forecastData.list[i].weather[0].description;
 
-      // initialising variables to the correct data values based on the current index of the loop
-      const forecastDate = dayjs(forecastData.list[i].dt_txt);
-      const formattedDate = forecastDate.format(`ddd, MMM YY`);
-      const temperature = forecastData.list[i].main.temp;
-      const windSpeed = forecastData.list[i].wind.speed;
-      const humidity = forecastData.list[i].main.humidity;
-      const weatherIcon = forecastData.list[i].weather[0].icon;
-      const weatherIconURL = `https://openweathermap.org/img/wn/${weatherIcon}@2x.png`;
-      const weatherDescription = forecastData.list[i].weather[0].description;
-
-         //constructing a block of code with template literals to make it easier to add it to the HTML elements
-         const forecastCodeBlock = 
-         `<div class="card-body bg-info-subtle border border-primary p-2" style="min-width: 250px;">
+        //constructing a block of code with template literals to make it easier to add it to the HTML elements
+        const forecastCodeBlock = `<div class="card-body bg-info-subtle border border-primary p-2" style="min-width: 250px;">
          <h4 class="card-header">${formattedDate}</h4>
          <h4>${weatherDescription}</h4>
          <img src="${weatherIconURL} " alt="weather-icon" title="${weatherDescription}""></img>
@@ -125,20 +118,19 @@ const searchCity = (city) => {
          <h4>Humidity: ${humidity}</h4>
          </div>`;
 
-         $(".weather-forecast").append(forecastCodeBlock);
+        $('.weather-forecast').append(forecastCodeBlock);
       }
 
-      console.log("Forecast Data:", forecastData);
-   });
-}
+      console.log('Forecast Data:', forecastData);
+    });
+};
+
 
 const renderHistory = () => {
    historyEl.empty();
-
+   
    history.forEach((term) => {
-      const button = $('<button>')
-         .text(term)
-         .addClass('btn btn-secondary me-2');
+      const button = $('<button>').text(term).addClass('btn btn-secondary me-2');
       button.on('click', () => searchCity(term));
       historyEl.append(button);
    });
@@ -146,23 +138,25 @@ const renderHistory = () => {
 
 // Render the most recent search
 searchCity(recentSearch);
+
+
 // Function to clear search history
 const clearBtn = () => {
-   localStorage.clear();
-   history = [];
-   renderHistory();
-}
+  localStorage.clear();
+  history = [];
+  renderHistory();
+};
 
 renderHistory();
 
 // fucntion to call the current time
 const updateCurrentTime = () => {
-   const formattedTime = dayjs().format('HH:mm:ss A');
-   $(".current-time").html(formattedTime);
-}
+  const formattedTime = dayjs().format('HH:mm:ss A');
+  $('.current-time').html(formattedTime);
+};
 
 updateCurrentTime();
 
 setInterval(updateCurrentTime, 1000);
 
-$("#clear-history").on("click", clearBtn);
+$('#clear-history').on('click', clearBtn);
