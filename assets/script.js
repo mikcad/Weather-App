@@ -76,9 +76,9 @@ const searchCity = (city) => {
       const cityCodeBlock = `
       <div class="p-3">
       <h3 class="border-bottom border-dark border-2">${cityName} - ${formattedDate}</h3>
-      <h4>Temperature: ${temperature.toFixed(0)}C</h4>
-      <h4>Wind Speed: ${windSpeed}</h4>
-      <h4>Humidity: ${humidity}</h4>
+      <h4>Temperature: ${temperature.toFixed(0)} °C</h4>
+      <h4>Wind Speed: ${windSpeed} mph</h4>
+      <h4>Humidity: ${humidity}%</h4>
       </div>
       <div class="p-3">
       <h4>${weatherDescription}</h4>
@@ -113,9 +113,9 @@ const searchCity = (city) => {
          <h4 class="card-header">${formattedDate}</h4>
          <h4>${weatherDescription}</h4>
          <img src="${weatherIconURL} " alt="weather-icon" title="${weatherDescription}""></img>
-         <h4>Temperature: ${temperature}</h4>
-         <h4>Wind Speed: ${windSpeed}</h4>
-         <h4>Humidity: ${humidity}</h4>
+         <h4>Temperature: ${temperature.toFixed(0)} °C</h4>
+         <h4>Wind Speed: ${windSpeed.toFixed(0)} mph</h4>
+         <h4>Humidity: ${humidity}%</h4>
          </div>`;
 
         $('.weather-forecast').append(forecastCodeBlock);
