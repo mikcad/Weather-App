@@ -1,6 +1,7 @@
 // variables for recent search
 const historyEl = $(".history");
 let history = JSON.parse(localStorage.getItem('searchHistory')) || [];
+let recentSearch = JSON.parse(localStorage.getItem('recentSearch')) || '';
 
 // personal api key
 const APIKey = "e5f32316bcf0946a567922d7f5383e9a";
@@ -59,6 +60,7 @@ const searchCity = (city) => {
    localStorage.setItem('searchHistory', JSON.stringify(history));
 
    renderHistory();
+  localStorage.setItem('recentSearch', JSON.stringify(history[0]));
 
    fetchWeatherData(city)
    .then(weatherData => {
@@ -142,6 +144,8 @@ const renderHistory = () => {
    });
 };
 
+// Render the most recent search
+searchCity(recentSearch);
 // Function to clear search history
 const clearBtn = () => {
    localStorage.clear();
