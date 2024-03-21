@@ -22,6 +22,9 @@ The Weather App is a web-based application that provides users with real-time we
 ### TODO:
 - [ ] Apply better styling
 - [ ] Error handling for searching unknown cities
+
+## Languages / Libraries
+[![Technologies Used](https://skillicons.dev/icons?i=js,html,css,jquery)](https://skillicons.dev)
  
 ## Screenshots
 ### Desktop Preview
